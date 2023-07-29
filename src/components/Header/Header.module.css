@@ -1,0 +1,28 @@
+.appBar {
+    background-color: blueviolet;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.appBar .heading {
+    margin: 0;
+    padding: 8px;
+}
+
+.heading {
+    color: white;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: green;
+    text-decoration: underline;
+}
+
+.active {
+    color: green;
+    text-decoration: underline;
+    font-weight: bold;
+}

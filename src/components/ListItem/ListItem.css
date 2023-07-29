@@ -1,0 +1,9 @@
+.list-item-flex {
+  margin: 0 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.list-item {
+  cursor: pointer;
+}

@@ -1,0 +1,36 @@
+form {
+  text-align: left;
+  padding: 0 45px 15px 25px;
+}
+
+.form-control input {
+  font: inherit;
+  border: 1px solid blueviolet;
+  background-color: transparent;
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.form-control label {
+  display: block;
+  margin: 8px 0;
+  font-weight: bold;
+}
+
+.form-control.invalid input {
+  border-color: red;
+  background: #f5d8d8;
+}
+
+.form-control.invalid label {
+  color: red;
+}
+
+.form-control input:focus {
+  background-color: #fff;
+}
+
+.heading {
+  color: blueviolet !important;
+}
