@@ -4,6 +4,8 @@ import Courses from './pages/courses/Courses';
 import AddCourse from './pages/AddCourse/AddCourse';
 import CourseDetails from './pages/course-details/CourseDetails';
 import Error from './pages/Error';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 const router = createBrowserRouter([
     {
@@ -19,7 +21,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function Routing() {
-    return(
-        <RouterProvider router={router} />
+    return (
+        <Provider store={store}>
+            <RouterProvider router={router} />
+        </Provider>
     );
 }

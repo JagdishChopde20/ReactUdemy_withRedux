@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from 'axios';
+import { useEffect, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import { Link, useParams } from "react-router-dom";
@@ -7,36 +6,29 @@ import Card from "../../components/UI/Card/Card";
 
 import styles from './CourseDetails.module.css';
 import Button from "../../components/UI/Button/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCourse, deleteCourseReset, fetchCourseDetails } from "../../redux";
 
 export default function CourseDetails() {
     const params = useParams();
     const navigate = useNavigate();
 
-    const [course, setCourse] = useState();
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const dispatch = useDispatch();
+    const course = useSelector(state => state.courseDetails);
+    const isLoading = useSelector(state => state.isLoading);
+    const isError = useSelector(state => state.isError);
+    const isCourseDeleted = useSelector(state => state.isCourseDeleted);
 
     // HTTP Get Request using axios
     const fetchData = useCallback(async () => {
         try {
             if (!params.courseId) return;
 
-            setIsLoading(true);
-
-            const apiUrl = `https://udemy-demo-react1-default-rtdb.firebaseio.com/courses/${params.courseId}.json`;
-
-            const res = await axios.get(apiUrl);
-            const data = res.data;
-
-            setCourse(data);
+            dispatch(fetchCourseDetails(params.courseId));
         } catch (error) {
             console.log(error);
-            setIsError(true);
-        } finally {
-            setIsLoading(false);
         }
-    }, [params.courseId])
+    }, [params.courseId, dispatch])
 
     useEffect(() => {
         // Fetch courses at startup
@@ -51,27 +43,28 @@ export default function CourseDetails() {
         courseContent = <Card><h3>Unable to fetch course details.</h3></Card>;
     }
 
+
+    const navigateToHome = useCallback(() => {
+        navigate('/');
+        dispatch(deleteCourseReset());
+    }, [navigate, dispatch]);
+
+    useEffect(() => {
+        if (isCourseDeleted) {
+            alert('Course Deleted.');
+            // Navigate to all courses page
+            navigateToHome();
+        } else if (isError) {
+            alert('Something went wrong.');
+        }
+    }, [isError, isCourseDeleted, navigateToHome]);
+
     const deleteCourseHandler = (courseId) => {
         const res = window.confirm('Are you sure you want to delete?');
         if (!res) return;
 
-        // Wrong URL -> will throw error
-        const delUrl = `https://udemy-demo-react1-default-rtdb.firebaseio.com/courses/${courseId}.json`;
-
-        axios.delete(delUrl)
-            .then(function (response) {
-                console.log(response);
-                if (response.status === 200) {
-                    alert('Course Deleted.');
-                    navigate('/');
-                } else {
-                    alert('Something went wrong.');
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert('Something went wrong.');
-            });
+        // Delete course
+        dispatch(deleteCourse(courseId));
     }
 
     return (

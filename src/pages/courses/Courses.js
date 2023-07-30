@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { apiUrl } from '../../helpers/globals';
+import { fetchCourses } from '../../redux';
 import styles from './Courses.module.css';
 
 import Card from '../../components/UI/Card/Card';
@@ -12,45 +12,18 @@ import ListItem from '../../components/ListItem/ListItem';
 export default function Courses() {
     const navigate = useNavigate();
 
-    const [courses, setCourses] = useState([]);
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
-  
-    // HTTP Get Request using axios
-    async function fetchData() {
-        try {
-            setIsLoading(true);
-
-            const res = await axios.get(apiUrl);
-
-            const data = res.data;
-
-            let finalData = [];
-            for (const key in data) {
-                // console.log(key, data[key]);
-                if (key && data[key]) {
-                    const element = data[key];
-                    finalData.push({
-                        id: key,
-                        ...element
-                    })
-                }
-            }
-
-            setCourses(finalData);
-        } catch (error) {
-            console.log(error);
-            setIsError(true);
-        } finally {
-            setIsLoading(false);
-        }
-    }
+    // Redux
+    const dispatch = useDispatch();
+    const courses = useSelector(state => state.courses);
+    const isLoading = useSelector(state => state.isLoading);
+    const isError = useSelector(state => state.isError);
 
     useEffect(() => {
+        if (courses && courses.length > 0) return;
+
         // Fetch courses at startup
-        fetchData();
-    }, []);
+        dispatch(fetchCourses());
+    }, [dispatch, courses]);
 
 
     let coursesContent = <Card><h3>No Courses Found.</h3></Card>;
@@ -66,7 +39,7 @@ export default function Courses() {
             {
                 // 
                 courses.map((course) => (
-                    <ListItem key={course.id} item={course} onClick={() => navigate(`/course-details/${course.id}`) } />
+                    <ListItem key={course.id} item={course} onClick={() => navigate(`/course-details/${course.id}`)} />
                 ))
             }
         </ol>;
@@ -76,7 +49,7 @@ export default function Courses() {
         <div>
             <Card>
                 <h2>Courses Fetched - {courses.length} </h2>
-                <Button onClick={fetchData} >Fetch Courses Again</Button>
+                <Button onClick={() => dispatch(fetchCourses())} >Fetch Courses Again</Button>
                 <br /><br />
             </Card>
 

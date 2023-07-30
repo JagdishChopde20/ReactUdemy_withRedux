@@ -4,6 +4,8 @@ import { Outlet } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Auth from "../Auth/Auth";
 import styles from './Layout.module.css';
+import Loading from "../../components/UI/Laoding/Loading";
+import { useSelector } from "react-redux";
 
 export default function Layout() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,6 +39,10 @@ export default function Layout() {
         localStorage.setItem('auth', 'logout');
     }
 
+    // loading from Redux
+    const isLoading = useSelector(state => state.isLoading);
+    const isAddLoading = useSelector(state => state.isAddLoading);
+
     return (
         <div className={styles.flex}>
             <div>
@@ -48,6 +54,8 @@ export default function Layout() {
                         {!isLoggedIn ? 'Welcome Guest!' : 'Welcome Jagdish!'}
                     </Auth>
                     <br />
+
+                    {(isLoading || isAddLoading) && <Loading />}
 
                     {isLoggedIn && <Outlet />}
                 </div>
