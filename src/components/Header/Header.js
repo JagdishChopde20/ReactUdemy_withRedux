@@ -26,6 +26,7 @@ function Header(props) {
                 <Button className={styles.btnServerStatus} onClick={toggleServerStatusHandler}>
                     {isServerWorking ? <span>&#10003;</span> : <span>&#10539;</span>}
                     &nbsp; Server 
+                    {isServerWorking ? <span> Up</span> : <span> Down</span>}
                 </Button>
             </header>
 
