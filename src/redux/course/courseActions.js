@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '../../helpers/globals';
 
-import { ADD_COURSE_FAILURE, ADD_COURSE_REQUEST, ADD_COURSE_RESET, ADD_COURSE_SUCCESS, DELETE_COURSE_FAILURE, DELETE_COURSE_REQUEST, DELETE_COURSE_RESET, DELETE_COURSE_SUCCESS, FETCH_COURSES_FAILURE, FETCH_COURSES_REQUEST, FETCH_COURSES_SUCCESS, FETCH_COURSE_DETAILS_FAILURE, FETCH_COURSE_DETAILS_REQUEST, FETCH_COURSE_DETAILS_SUCCESS } from "./courseTypes";
+import { ADD_COURSE_FAILURE, ADD_COURSE_REQUEST, ADD_COURSE_RESET, ADD_COURSE_SUCCESS, DELETE_COURSE_FAILURE, DELETE_COURSE_REQUEST, DELETE_COURSE_RESET, DELETE_COURSE_SUCCESS, FETCH_COURSES_FAILURE, FETCH_COURSES_REQUEST, FETCH_COURSES_SUCCESS, FETCH_COURSE_DETAILS_FAILURE, FETCH_COURSE_DETAILS_REQUEST, FETCH_COURSE_DETAILS_SUCCESS, TOGGLE_SERVER_STATUS } from "./courseTypes";
 
 // FETCH COURSES
 export const fetchCoursesRequest = () => {
@@ -26,9 +26,13 @@ export const fetchCoursesFailure = () => {
 // Thunk
 // HTTP Get Request using axios
 export const fetchCourses = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         try {
             dispatch(fetchCoursesRequest());
+
+            const isServerWorking = getState().isServerWorking;
+            if (!isServerWorking)
+                throw new Error('Server is down');
 
             const res = await axios.get(apiUrl);
 
@@ -85,8 +89,11 @@ export const addCourseReset = () => {
 export const addCourse = (newCourse) => {
     return async (dispatch, getState) => {
         try {
-            // console.log(getState());
             dispatch(addCourseRequest());
+
+            const isServerWorking = getState().isServerWorking;
+            if (!isServerWorking)
+                throw new Error('Server is down');
 
             const res = await axios.post(apiUrl, newCourse);
 
@@ -181,14 +188,16 @@ export const deleteCourseReset = () => {
 // Thunk
 // HTTP Delete Request using axios
 export const deleteCourse = (courseId) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         try {
             dispatch(deleteCourseRequest());
 
+            const isServerWorking = getState().isServerWorking;
+            if (!isServerWorking)
+                throw new Error('Server is down');
+
             const delUrl = `https://udemy-demo-react1-default-rtdb.firebaseio.com/courses/${courseId}.json`;
             const res = await axios.delete(delUrl);
-
-            console.log(res);
 
             if (res.status === 200)
                 dispatch(deleteCourseSuccess(courseId));
@@ -197,5 +206,13 @@ export const deleteCourse = (courseId) => {
         } catch (error) {
             dispatch(deleteCourseFailure());
         }
+    }
+}
+
+
+// Server working status - action
+export const toggleServerStatus = () => {
+    return {
+        type: TOGGLE_SERVER_STATUS
     }
 }

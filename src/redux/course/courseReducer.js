@@ -1,4 +1,4 @@
-import { ADD_COURSE_FAILURE, ADD_COURSE_REQUEST, ADD_COURSE_RESET, ADD_COURSE_SUCCESS, DELETE_COURSE_FAILURE, DELETE_COURSE_REQUEST, DELETE_COURSE_RESET, DELETE_COURSE_SUCCESS, FETCH_COURSES_FAILURE, FETCH_COURSES_REQUEST, FETCH_COURSES_SUCCESS, FETCH_COURSE_DETAILS_FAILURE, FETCH_COURSE_DETAILS_REQUEST, FETCH_COURSE_DETAILS_SUCCESS } from "./courseTypes"
+import { ADD_COURSE_FAILURE, ADD_COURSE_REQUEST, ADD_COURSE_RESET, ADD_COURSE_SUCCESS, DELETE_COURSE_FAILURE, DELETE_COURSE_REQUEST, DELETE_COURSE_RESET, DELETE_COURSE_SUCCESS, FETCH_COURSES_FAILURE, FETCH_COURSES_REQUEST, FETCH_COURSES_SUCCESS, FETCH_COURSE_DETAILS_FAILURE, FETCH_COURSE_DETAILS_REQUEST, FETCH_COURSE_DETAILS_SUCCESS, TOGGLE_SERVER_STATUS } from "./courseTypes"
 
 const initialState = {
     courses: [],
@@ -11,7 +11,9 @@ const initialState = {
     isAddError: false,
     isCourseAdded: false,
 
-    isCourseDeleted: false
+    isCourseDeleted: false,
+
+    isServerWorking: true
 }
 
 const reducer = (state = initialState, action) => {
@@ -32,7 +34,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                courses: [],
+                // courses: [],
                 isError: true,
             }
         case ADD_COURSE_REQUEST:
@@ -106,6 +108,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isCourseDeleted: false
+            }
+        case TOGGLE_SERVER_STATUS:
+            return {
+                ...state,
+                isServerWorking: !state.isServerWorking
             }
         default:
             return state;

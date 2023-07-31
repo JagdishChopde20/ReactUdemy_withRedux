@@ -48,7 +48,7 @@ export default function Courses() {
     return (
         <div>
             <Card>
-                <h2>Courses Fetched - {courses.length} </h2>
+                <h2>Courses Fetched - {isError ? 0 : courses.length} </h2>
                 <Button onClick={() => dispatch(fetchCourses())} >Fetch Courses Again</Button>
                 <br /><br />
             </Card>
