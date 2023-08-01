@@ -97,8 +97,16 @@ export const addCourse = (newCourse) => {
 
             const res = await axios.post(apiUrl, newCourse);
 
-            if (res.status === 200)
-                dispatch(addCourseSuccess(newCourse));
+            console.log(res)
+            console.log(newCourse)
+
+            if (res.status === 200) {
+                const newCourseWithId = {
+                    ...newCourse,
+                    id: res.data?.name
+                }
+                dispatch(addCourseSuccess(newCourseWithId));
+            }
             else
                 dispatch(addCourseFailure());
         } catch (error) {

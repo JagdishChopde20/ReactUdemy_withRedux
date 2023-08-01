@@ -1,5 +1,17 @@
-
 .heading {
-    color: blueviolet !important;
-  }
-  
+  color: blueviolet !important;
+}
+
+.filterInput {
+  font: inherit;
+  border: 1px solid blueviolet;
+  background-color: transparent;
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  width: 95%;
+  text-align: center;
+}
+
+.filterInput:focus {
+  background-color: #fff;
+}

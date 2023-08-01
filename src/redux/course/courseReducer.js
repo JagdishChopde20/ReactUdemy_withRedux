@@ -34,7 +34,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                // courses: [],
+                courses: [],
                 isError: true,
             }
         case ADD_COURSE_REQUEST:

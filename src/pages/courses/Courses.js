@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -18,13 +18,25 @@ export default function Courses() {
     const isLoading = useSelector(state => state.isLoading);
     const isError = useSelector(state => state.isError);
 
-    useEffect(() => {
-        if (courses && courses.length > 0) return;
+    // Local state
+    const [localCourses, setLocalCourses] = useState(courses);
+    const [filterQuery, setFilterQuery] = useState('');
 
+    // filter query change capture
+    const filterQueryChangedHandler = event => {
+        setFilterQuery(event.target.value);
+    }
+
+    useEffect(() => {
         // Fetch courses at startup
         dispatch(fetchCourses());
-    }, [dispatch, courses]);
+    }, [dispatch]);
 
+    // Filter logic
+    useEffect(() => {
+        setLocalCourses(courses.filter(x => x.name.toLowerCase().includes(filterQuery.toLowerCase())));
+        console.log(courses);
+    }, [filterQuery, courses]);
 
     let coursesContent = <Card><h3>No Courses Found.</h3></Card>;
 
@@ -34,11 +46,11 @@ export default function Courses() {
         coursesContent = <Card><h3>Unable to fetch courses.</h3></Card>;
     }
 
-    if (!isLoading && !isError && courses.length > 0) {
+    if (!isLoading && !isError && localCourses.length > 0) {
         coursesContent = <ol>
             {
                 // 
-                courses.map((course) => (
+                localCourses.map((course) => (
                     <ListItem key={course.id} item={course} onClick={() => navigate(`/course-details/${course.id}`)} />
                 ))
             }
@@ -54,7 +66,13 @@ export default function Courses() {
             </Card>
 
             <br />
-            <h3 className={styles.heading}>ALL COURSES</h3>
+            {!isError &&
+                <Card>
+                    <input type="text" onChange={filterQueryChangedHandler} className={styles.filterInput} placeholder='Search Courses' />
+                </Card>
+            }
+
+            <h3 className={styles.heading}>{(!filterQuery ? 'ALL COURSES - ' : 'SERACH RESULT - ') + localCourses.length}</h3>
 
             {coursesContent}
 
